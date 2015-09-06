@@ -51,8 +51,8 @@ class Account():
         self.header = {'User-Agent':'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '\
         'Chrome/43.0.2357.134 Safari/537.36'}
         #self.header = {'User-Agent' : 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)'}
-        self.name = '595463155@qq.com'
-        self.pwd = '5shiTOP08'
+        self.name = ''
+        self.pwd = ''
 
     def getData(self,url):
         try:
