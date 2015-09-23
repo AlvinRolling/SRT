@@ -7,15 +7,22 @@ import urllib2
 from downloader import Downloader
 from bs4 import BeautifulSoup
 from friendparser import FriendParser
+from followparser import FollowParser1,FollowParser2
 
-class FriendCrawler(object):
+class FollowCrawler(object):
     def __init__(self,uid,origin=0):
         self.downloader = Downloader()
         self.list = []
-        self.parser = FriendParser()
         self.uid = uid
         self.origin = origin
+        if(origin):
+            self.parser = FollowParser2()
+            self.per = 30
+        else:
+            self.parser = FollowParser1()
+            self.per = 20
         self.friendNum = self._parse_friendnum(uid,origin)
+        print "FollowNum: ",self.friendNum
         
         # origin==1, means it's the user itself, the html is a little different 
         
@@ -27,7 +34,7 @@ class FriendCrawler(object):
         if(origin):
             url = 'http://weibo.com/p/1005052198840781/myfollow?relate=fans'
             content = self.downloader.download(url)
-            btag = '粉丝<\/span><em class="num S_txt1">'
+            btag = '关注<\/span><em class="num S_txt1">'
             etag = '<\/em>'
             bpos = content.find(btag)+len(btag)
             epos = content[bpos:].find(etag)+bpos
@@ -38,7 +45,7 @@ class FriendCrawler(object):
             w = open("C:/Users/hp1/Desktop/weibo_crawler/test4.txt","w")
             w.write(content)
             w.close()
-            btag1 = '的粉丝<\/span>'
+            btag1 = '的关注<\/span>'
             btag2 = '>'
             etag = '<\/em>'
             bpos = content.find(btag1)
@@ -52,10 +59,9 @@ class FriendCrawler(object):
 
     def get_url(self,uid,page,origin=0):
         if(origin):
-            url = 'http://weibo.com/'+str(uid)+'/myfans?cfs=600&relate=fans&t=1&f=1&type=&Pl_Official_RelationFans__103_page='+str(page)
+            url = 'http://weibo.com/p/1005052198840781/myfollow?t=1&pids=Pl_Official_RelationMyfollow__108&cfs=&Pl_Official_RelationMyfollow__108_page='+str(page)
         else:
-            url = 'http://weibo.com/p/100505'+str(uid)+'/follow?relate=fans&page='+str(page)
-        print "url: ",url
+            url = 'http://weibo.com/p/100505'+str(uid)+'/follow?page='+str(page)
         return url
     # get the friends url, could only get 10 pages now
     
@@ -67,10 +73,6 @@ class FriendCrawler(object):
             return content.replace('\\/', '/')
         return ''
 
-    def get_filepath(self,uid):
-        filepath = "C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_friends.txt"
-        return filepath
-        
     def scratch(self):
         '''
         filepath = self.get_filepath(self.uid)
@@ -78,8 +80,8 @@ class FriendCrawler(object):
             print self.uid, u'用户的好友已下载！'
             return None
         '''
-        pageNum = min(10,int((self.friendNum-1)/15)+1)
-        print "Friends No:",self.friendNum
+        pageNum = min(10,int((self.friendNum-1)/self.per)+1)
+        print "Follows No:",self.friendNum
         # should be careful here
         # 10 is the maximun number of pages we could get
         for i in range(1,pageNum+1):
@@ -92,14 +94,24 @@ class FriendCrawler(object):
     
         
     def parse_friend(self,content,origin=0):
-        btag = '<div class="W_tips tips_warn clearfix">'
+        
         if(not origin):
-            etag = '<ul class="follow_list" node-type="userListBox">'
+            if(self.friendNum >self.per):
+                etag = '<div class="WB_cardpage S_line1" node-type="pageList">'
+                btag = '<ul class="follow_list" node-type="userListBox">'
+                bpos = content.find(btag)
+                epos = content.find(etag)
+            else:
+                etag = '\/ul'
+                btag = '<div class="follow_inner">'
+                bpos = content.find(btag)+len(btag)
+                epos = content[bpos:].find(etag)+bpos
         else:
-            etag = '<ul class="follow_list">'
-        bpos = content.find(btag)
-        epos = content.find(etag)
-        content = content[epos:bpos]
+            btag = '<ul class="member_ul clearfix" node-type="relation_user_list">'
+            etag = '<div class="WB_cardpage S_line1"'
+            bpos = content.find(btag)
+            epos = content.find(etag)
+        content = content[bpos:epos]
         content = self._process_html(content)
         if(len(content) == 0):
             print "Content matching failed."
@@ -110,13 +122,13 @@ class FriendCrawler(object):
             
         
 if __name__ == '__main__':
-    uid = 2198840781
-    fc = FriendCrawler(uid,1)
+    uid = 5252176447
+    fc = FollowCrawler(uid)
     result = fc.scratch()
     print result
     l = len(result)
-    w = open("C:/Users/hp1/Desktop/weibo_crawler/2198840781_friends.txt","w")
-    id_only = open("C:/Users/hp1/Desktop/weibo_crawler/2198840781_friends_id.txt","w")
+    w = open("C:/Users/hp1/Desktop/weibo_crawler/5252176447_follows.txt","w")
+    id_only = open("C:/Users/hp1/Desktop/weibo_crawler/5252176447_follows_id.txt","w")
     for i in range(0,l):
         if(len(result[i]) > 0):
             m = len(result[i])

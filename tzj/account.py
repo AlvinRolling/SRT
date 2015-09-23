@@ -29,10 +29,6 @@ class Account():
             'savestate': '7',
             'useticket': '1',
             'ssosimplelogin' : '1',
-            #'pagerefer': '',
-            #'pcid': '',
-            #'door': '',  # 验证码
-            
             'vsnf': '1',
             'vsnval' : '',
             'su': '',
@@ -42,23 +38,20 @@ class Account():
             'pwencode': 'rsa2',
             'rsakv': '',
             'sp': '',
-            #'sr': '',
             'encoding': 'UTF-8',
-            #'prelt': '115',
             'url': 'http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack',
             'returntype': 'META'
         }
         self.header = {'User-Agent':'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '\
         'Chrome/43.0.2357.134 Safari/537.36'}
         #self.header = {'User-Agent' : 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)'}
-        self.name = ''
-        self.pwd = ''
+        self.name = '595463155@qq.com'
+        self.pwd = '5shiTOP08'
 
     def getData(self,url):
         try:
             req = urllib2.Request(url)
             result = opener.open(req)
-            #result = urllib2.urlopen(req)
             text = result.read()
             return text
         except Exception, e:
@@ -79,8 +72,6 @@ class Account():
         print "----------logining---------"
         prelogin_url = 'http://login.sina.com.cn/sso/prelogin.php?entry=weibo&callback=sinaSSOController.preloginCallBack&su=%s&rsakt=mod&checkpin=1&client=ssologin.js(v1.4.18)&_=1400822309846' % self.name
         prelogin = self.getData(prelogin_url)
-        print "prelogin: "
-        print prelogin
         servertime = re.findall('"servertime":(.+?),',prelogin)[0]
         pubkey = re.findall('"pubkey":"(.+?)",',prelogin)[0]
         rsakv = re.findall('"rsakv":"(.+?)",',prelogin)[0]
@@ -110,7 +101,6 @@ class Account():
             bpos = s.find(btag.replace('"', "'")) + len(btag)
             epos = s.find(etag.replace('"', "'"), bpos)
         urll = s[bpos:epos]
-        print "urll: ",urll
         login = self.getData(urll)
         if(login.find('retcode=0')):
             print "successful"

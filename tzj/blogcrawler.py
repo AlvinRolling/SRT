@@ -125,6 +125,7 @@ class BlogCrawler(object):
         total_pagenum = msgcount / per_pagenum
         if msgcount % per_pagenum:
             total_pagenum += 1
+        print "total_page: ",total_pagenum
         return total_pagenum
 
     def _parse_msgcount(self, content):
@@ -137,13 +138,19 @@ class BlogCrawler(object):
         """
         if not content:
             raise PreprocessError(self.uid)
+        if(content.find('您当前访问的帐号异常') != -1):
+            return 0
         etag1 = '>微博<\/span>'
         etag2 = '<\/strong>'
         btag = '>'
         epos = content.find(etag1)
         epos = content[:epos].rfind(etag2)
         bpos = content[:epos].rfind(btag) + len(btag)
-        return int(content[bpos:epos])
+        num = content[bpos:epos]
+        if(len(num) == 0):
+            return 0
+        else:
+            return int(content[bpos:epos])
 
     def _parse_userinfo(self, content):
         """
@@ -175,27 +182,18 @@ class BlogCrawler(object):
         start_pageindex: 从第几页开始抓取用户的微博数据
         """
         self._init_(self.get_url(uid))
+        '''
         if os.path.isfile(self.get_filepath(uid)):  # 用户微博已下载
             print self.uid, u'用户的微博已下载！'
             return None
+        '''
+        # modified on 8/9. Don't need to check, as checked in the main.py whether it has been recorded
+        # also, overwriting is acceptable
         if start_pageindex > self.pagenum:
+            # print self.pagenum
             return []
-        scrach_result = self._sequence_scratch(self.uid, start_pageindex, self.pagenum)
-        return scrach_result
-        '''
-        w = open(self.get_filepath(uid),"w")
-        L = len(scrach_result)
-        print "length: ",L
-        for i in range(0,L):
-            key = scrach_result[i].keys()
-            for item in key:
-                w.write(item)
-                w.write(": \t")
-                w.write(str(scrach_result[i][item]))
-                w.write('\n')
-            w.write('\n')
-        w.close()
-        '''
+        scratch_result = self._sequence_scratch(self.uid, start_pageindex, self.pagenum)
+        return scratch_result
         
     def _sequence_scratch(self, uid, start_pageindex, end_pageindex, direction=1):
         """
@@ -235,6 +233,7 @@ class BlogCrawler(object):
             sub_blogs = self.parser.parse(content)
             blogs.extend(sub_blogs)
         if not self._continue(blogs):
+            print "not continue"
             return blogs
         # 下载第二页
         self.http_params['count'] = '15'
@@ -295,4 +294,5 @@ class BlogCrawler(object):
 
 if __name__ == '__main__':
     blogcrawler = BlogCrawler()
-    print blogcrawler.scratch('2316991382')
+    t = blogcrawler.scratch('3770186142')
+    print t

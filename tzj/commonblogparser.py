@@ -1,3 +1,4 @@
+# -*- coding: cp936 -*-
 from blogparser import BlogParser
 from bs4 import BeautifulSoup
 
@@ -13,17 +14,21 @@ class CommonBlogParser(BlogParser):
         msgsoup = blogsoup.find('div', attrs={'node-type': 'feed_list_content'})
         self.blog['mc'] = self._get_text(msgsoup)
         # rrc,rcc,rc,cc
+        self.blog['nc'] = self._parse_at_people(blogsoup)
+        
         statsouplist = blogsoup.find_all('div', class_='WB_handle')
         if len(statsouplist) == 2:
-            self.blog['rc'], self.blog['cc'] = self._parse_statistics(statsouplist[1])
-            self.blog['rrc'], self.blog['rcc'] = self._parse_statistics(statsouplist[0])
+            self.blog['rc'], self.blog['cc'], self.blog['lc'] = self._parse_statistics(statsouplist[1])
+            self.blog['rrc'], self.blog['rcc'], self.blog['rlc'] = self._parse_statistics(statsouplist[0])
+            # modified, should be right now
         elif len(statsouplist) == 1:
-            self.blog['rc'], self.blog['cc'] = self._parse_statistics(statsouplist[0])
+            self.blog['rc'], self.blog['cc'], self.blog['lc'] = self._parse_statistics(statsouplist[0])
         # run, ruid
         ruinfosoup = blogsoup.find(attrs={'node-type': 'feed_list_originNick'})
         if ruinfosoup:
             self.blog['run'] = self._get_attr(ruinfosoup, 'nick-name')
-            self.blog['ruid'] = self._get_attr(ruinfosoup, 'usercard')
+            self.blog['ruid'] = self._get_attr(ruinfosoup, 'usercard')[3:]
+        # modified on 8/9/2015
         # rmc
         rmcsoup = blogsoup.find(attrs={'node-type': 'feed_list_reason'})
         self.blog['rmc'] = self._get_text(rmcsoup)
@@ -37,6 +42,9 @@ class CommonBlogParser(BlogParser):
         elif len(fromsouplist) == 1:
             self.blog['page'], self.blog['pt'], self.blog['srn'] = self._parse_blog_from(fromsouplist[0])
         
+        self.blog['lp'] = self._parse_like()
+        self.blog['comment'] = self._parse_comment()
+        self.blog['repost'] = self._parse_repost()
         return self.blog
 
 

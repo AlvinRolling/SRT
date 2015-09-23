@@ -25,8 +25,6 @@ class Downloader(object):
         'User-Agent': 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.65 Safari/537.36',
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "zh-CN,zh;q=0.8,en;q=0.6",
-        #"en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4",
-        #"Cache-Control":"max-age=0",
         "Accept-Encoding": "gzip,deflate,sdch",
         "Connection": "keep-alive",
         "Host": "weibo.com"
@@ -53,9 +51,10 @@ class Downloader(object):
         
 if __name__ == '__main__':
     downloader = Downloader()
-    url = 'http://weibo.com/p/1005052034424692/follow?relate=fans&page=1'
+    #url = 'http://weibo.com/u/3848638047?is_search=0&visible=0&is_tag=0&profile_ftype=1&page=2#feedtop'
     #print downloader.download(url)
-    
+    # url = 'http://weibo.com/aj/v6/comment/big?ajwvr=6&id=3887737251450427&max_id=3887761943229187&page=1&__rnd=1442398727739'
+    url = 'http://www.weibo.com/aj/v6/comment/big?ajwvr=6&id=3832039298207181&__rnd=1442713133489'
     w = open("C:/Users/hp1/Desktop/weibo_crawler/test4.txt","w")
     result = downloader.download(url)
     result = result.decode('utf-8','ignore')

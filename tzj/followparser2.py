@@ -4,7 +4,7 @@
 from bs4 import BeautifulSoup
 
 
-class FriendParser(object):
+class FollowParser2(object): # the origin
     def __init__(self):
         self.pro = {
         'username':'',
@@ -26,13 +26,11 @@ class FriendParser(object):
         'fans':'',
         'blog_num':'',
         'address':'',
-        'desc':'',
-        #'same_follow':'',
-        #'mutual':''
+        'desc':''
         }
     
     def parse(self,friendsoup,origin=0):
-        friendsouplist = friendsoup.findAll('li',attrs = {'class':'follow_item S_line2'})
+        friendsouplist = friendsoup.findAll('ul',attrs = {'class':'member_ul clearfix'})
         friendlist = []
         for friend in friendsouplist:
             self._init_()
@@ -57,39 +55,15 @@ class FriendParser(object):
         return username,uid
     
     def _get_sex(self,soup):
-        content = soup.find('i')
-        sex = content['class'][1]
-        sex = sex[5:]
-        return sex
+        return ''
     
     def _get_popular(self,soup):
-        relation = soup.findAll('span',attrs={'class':'conn_type'})
-        follow = relation[0].find('a').contents[0]
-        fans = relation[1].find('a').contents[0]
-        blog_num = relation[2].find('a').contents[0]
-        return follow,fans,blog_num
+        return '','',''
     
     def _get_info(self,soup,origin=0):
-        add = soup.find('div',attrs = {'class':'info_add'})
-        if(add):
-            if(origin):
-                etag = '</em>'
-                btag = '</div>'
-                add = str(add)
-                epos = add.find(etag)
-                bpos = add.find(btag)
-                address = add[epos+len(etag):bpos]
-            else:
-                add = add.find('span')
-                address = add.contents[0]
-        else:
-            address = ''
-            
-        intro = soup.find('div',attrs={'class':'info_intro'})
-        if(intro):
-            introduction = intro.find('span').contents[0]
-        else:
-            introduction = ''
-            
-        return address,introduction
+        return '',''
+
+
+    # at the homepage, you can't get specific information about people you follow.
+    # their information could be updated later
   

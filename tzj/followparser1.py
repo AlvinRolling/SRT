@@ -4,7 +4,7 @@
 from bs4 import BeautifulSoup
 
 
-class FriendParser(object):
+class FollowParser1(object):    # not the origin
     def __init__(self):
         self.pro = {
         'username':'',
@@ -26,9 +26,7 @@ class FriendParser(object):
         'fans':'',
         'blog_num':'',
         'address':'',
-        'desc':'',
-        #'same_follow':'',
-        #'mutual':''
+        'desc':''
         }
     
     def parse(self,friendsoup,origin=0):
@@ -72,16 +70,8 @@ class FriendParser(object):
     def _get_info(self,soup,origin=0):
         add = soup.find('div',attrs = {'class':'info_add'})
         if(add):
-            if(origin):
-                etag = '</em>'
-                btag = '</div>'
-                add = str(add)
-                epos = add.find(etag)
-                bpos = add.find(btag)
-                address = add[epos+len(etag):bpos]
-            else:
-                add = add.find('span')
-                address = add.contents[0]
+            add = add.find('span')
+            address = add.contents[0]
         else:
             address = ''
             
