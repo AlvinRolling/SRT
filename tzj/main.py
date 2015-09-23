@@ -49,7 +49,8 @@ while(len(to_be_searched) > 0):
     print "Follows of "+str(uid)+" were recorded."
     
     #try:
-    fopen_id = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_fans_id.txt","r")        
+    #fopen_id = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_fans_id.txt","r") 
+    fopen_id = open(str(uid)+"_fans_id.txt","r")       
     # read friends from the file saved above
     
     while True:    
@@ -66,7 +67,8 @@ while(len(to_be_searched) > 0):
             break
     fopen_id.close()
 
-    fopen_id = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_follows_id.txt","r")        
+    #fopen_id = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_follows_id.txt","r")
+    fopen_id = open(str(uid)+"_follows_id.txt","r")        
     # read friends from the file saved above
     
     while True:    
@@ -85,12 +87,14 @@ while(len(to_be_searched) > 0):
 #except:
     #print "Open File Error! "
     searched.append(uid)
-    f = open("C:/Users/hp1/Desktop/weibo_crawler/searched.txt","a+")
+    #f = open("C:/Users/hp1/Desktop/weibo_crawler/searched.txt","a+")
+    f = open("searched.txt","a+")
     f.write(str(uid))
     f.write('\n')
     f.close()
     
-    f = open("C:/Users/hp1/Desktop/weibo_crawler/to_be_searched.txt","w")
+    #f = open("C:/Users/hp1/Desktop/weibo_crawler/to_be_searched.txt","w")
+    f = open("to_be_searched","w")
     for item in to_be_searched:
         f.write(str(item))
         f.write('\n')

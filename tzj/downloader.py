@@ -15,7 +15,8 @@ class Downloader(object):
     def __init__(self):
         cookie = cookielib.MozillaCookieJar()
         #从文件中读取cookie内容到变量  
-        cookie.load("C:/Users/hp1/Desktop/weibo_crawler/cookie.txt", ignore_discard=True, ignore_expires=True)
+        #cookie.load("C:/Users/hp1/Desktop/weibo_crawler/cookie.txt", ignore_discard=True, ignore_expires=True)
+        cookie.load("cookie.txt", ignore_discard=True, ignore_expires=True)
         #利用urllib2的build_opener方法创建一个opener
         self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookie))
         

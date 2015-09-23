@@ -2,6 +2,7 @@
 # friend parser
 
 from bs4 import BeautifulSoup
+#from BeautifulSoup import BeautifulSoup
 
 
 class FollowParser2(object): # the origin

@@ -5,7 +5,7 @@ import os
 import time
 import math
 from bs4 import BeautifulSoup
-
+#from BeautifulSoup import BeautifulSoup
 import config
 #from toolkit.downloader import Downloader, DownloadError
 #from toolkit import datetimelib as dt

@@ -10,6 +10,7 @@ import binascii
 import os
 import json
 from bs4 import BeautifulSoup
+#from BeautifulSoup import BeautifulSoup
 
 
 cj = cookielib.MozillaCookieJar()#cookiefilename)
@@ -104,7 +105,8 @@ class Account():
         login = self.getData(urll)
         if(login.find('retcode=0')):
             print "successful"
-            cj.save("C:/Users/hp1/Desktop/weibo_crawler/cookie.txt",ignore_discard=True, ignore_expires=True)
+            #cj.save("C:/Users/hp1/Desktop/weibo_crawler/cookie.txt",ignore_discard=True, ignore_expires=True)
+            cj.save("cookie.txt",ignore_discard=True, ignore_expires=True)
             return True
         else:
             return False

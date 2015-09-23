@@ -4,7 +4,9 @@
 import re
 import datetime
 import bs4
+import BeautifulSoup
 from bs4 import BeautifulSoup
+#from BeautifulSoup import BeautifulSoup
 from downloader import Downloader
 
 class BlogParser:
@@ -93,7 +95,9 @@ class BlogParser:
         epos = html.find('<!--翻页-->', bpos)
         bloghtml = html[bpos:epos].replace('\\/', '/') + '</div>'   # the original one was not complete
         soup = BeautifulSoup(bloghtml)
-        blogsouplist = soup.find_all('div', class_ = 'WB_feed_type')
+        #blogsouplist = soup.find_all('div', class_ = 'WB_feed_type')
+        #blogsouplist = soup.find_all('div',attrs= {'class':'WB_feed_type'})
+        blogsouplist = soup.findAll('div', class_ = 'WB_feed_type')
 #class_='WB_cardwrap WB_feed_type S_bg2 ')
         bloglist = []
         for blogsoup in blogsouplist:

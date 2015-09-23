@@ -6,6 +6,7 @@ import logging
 import urllib2
 from downloader import Downloader
 from bs4 import BeautifulSoup
+#from BeautifulSoup import BeautifulSoup
 from friendparser import FriendParser
 
 class FriendCrawler(object):
@@ -35,9 +36,11 @@ class FriendCrawler(object):
         else:
             url = 'http://weibo.com/p/100505'+str(uid)+'/follow?relate=fans&from=100505&wvr=6&mod=headfans&current=fans'
             content = self.downloader.download(url)
+            '''
             w = open("C:/Users/hp1/Desktop/weibo_crawler/test4.txt","w")
             w.write(content)
             w.close()
+            '''
             btag1 = '的粉丝<\/span>'
             btag2 = '>'
             etag = '<\/em>'

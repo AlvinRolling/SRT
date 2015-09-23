@@ -1,7 +1,7 @@
 # -*- coding: cp936 -*-
 from blogparser import BlogParser
 from bs4 import BeautifulSoup
-
+#from BeautifulSoup import BeautifulSoup
 
 class CommonBlogParser(BlogParser):
     def __init__(self):

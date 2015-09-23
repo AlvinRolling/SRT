@@ -4,6 +4,7 @@
 # FollowParser2 for the original node
 
 from bs4 import BeautifulSoup
+#from BeautifulSoup import BeautifulSoup
 
 
 class FollowParser1(object):    # not the origin

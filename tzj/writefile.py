@@ -4,8 +4,10 @@ class WriteFile(object):
     
     def write_fans(self,uid,result): 
         l = len(result)
-        w = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_fans.txt","w")
-        id_only = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_fans_id.txt","w")
+        #w = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_fans.txt","w")
+        #id_only = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_fans_id.txt","w")
+        w = open(str(uid)+"_fans.txt","w")
+        id_only = open(str(uid)+"_fans_id.txt","w")
         for i in range(0,l):
             if(len(result[i]) > 0):
                 m = len(result[i])
@@ -15,7 +17,8 @@ class WriteFile(object):
                         print "follow: ",int(result[i][j]['follow'])
                         print "fans: ",int(result[i][j]['fans'])
                         
-                        ow = open("C:/Users/hp1/Desktop/weibo_crawler/omitted_user.txt","a+")
+                        #ow = open("C:/Users/hp1/Desktop/weibo_crawler/omitted_user.txt","a+")
+                        ow = open("omitted_user.txt","a+")
                         ow.write(str(result[i][j]['id']))
                         ow.write('\t')
                         ow.write(str(result[i][j]['follow']))
@@ -43,7 +46,8 @@ class WriteFile(object):
         id_only.close()
     
     def write_blog(self,uid,scratch_result):
-        filename = "C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_blog.txt"
+        #filename = "C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_blog.txt"
+        filename = str(uid)+"_blog.txt"
         w = open(filename,"w")
         L = len(scratch_result)
         for i in range(0,L):
@@ -65,8 +69,10 @@ class WriteFile(object):
 
     def write_follows(self,uid,result):
         l = len(result)
-        w = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_follows.txt","w")
-        id_only = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_follows_id.txt","w")
+        #w = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_follows.txt","w")
+        #id_only = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_follows_id.txt","w")
+        w = open(str(uid)+"_follows.txt","w")
+        id_only = open(str(uid)+"_follows_id.txt","w")
         for i in range(0,l):
             if(len(result[i]) > 0):
                 m = len(result[i])
@@ -75,7 +81,8 @@ class WriteFile(object):
                         print "omit user: ",int(result[i][j]['id'])
                         print "follow: ",int(result[i][j]['follow'])
                         print "fans: ",int(result[i][j]['fans'])
-                        ow = open("C:/Users/hp1/Desktop/weibo_crawler/omitted_user.txt","a+")
+                        #ow = open("C:/Users/hp1/Desktop/weibo_crawler/omitted_user.txt","a+")
+                        ow = open("omitted_user.txt","a+")
                         ow.write(str(result[i][j]['id']))
                         ow.write('\t')
                         ow.write(str(result[i][j]['follow']))
