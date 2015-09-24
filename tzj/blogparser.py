@@ -4,9 +4,7 @@
 import re
 import datetime
 import bs4
-import BeautifulSoup
 from bs4 import BeautifulSoup
-#from BeautifulSoup import BeautifulSoup
 from downloader import Downloader
 
 class BlogParser:
@@ -95,9 +93,7 @@ class BlogParser:
         epos = html.find('<!--翻页-->', bpos)
         bloghtml = html[bpos:epos].replace('\\/', '/') + '</div>'   # the original one was not complete
         soup = BeautifulSoup(bloghtml)
-        #blogsouplist = soup.find_all('div', class_ = 'WB_feed_type')
-        #blogsouplist = soup.find_all('div',attrs= {'class':'WB_feed_type'})
-        blogsouplist = soup.findAll('div', class_ = 'WB_feed_type')
+        blogsouplist = soup.find_all('div', class_ = 'WB_feed_type')
 #class_='WB_cardwrap WB_feed_type S_bg2 ')
         bloglist = []
         for blogsoup in blogsouplist:
@@ -183,7 +179,7 @@ class BlogParser:
             likecount = 0
         else:
             likecount = like_num[0].strip()
-        print like_num
+        #print like_num
         return forwardcount, commentcount, likecount
 
     def _parse_blog_from(self, fromsoup):
@@ -232,10 +228,6 @@ class BlogParser:
                 username = user_url[bpos:epos]
                 url = 'http://weibo.com/aj/v6/user/newcard?ajwvr=6&name='+username+'&type=1'
                 userpage = self.downloader.download(url)
-                '''
-                btag = "$CONFIG['oid']='"
-                etag = "';"
-                '''
                 if(userpage.find('"code":"100001"') != -1):
                     continue
                 btag = 'uid="'
@@ -243,7 +235,6 @@ class BlogParser:
                 bpos = userpage.find(btag)+len(btag)
                 epos = userpage[bpos:].find(etag)+bpos
                 oid = int(userpage[bpos:epos])
-                print "oid",oid
                 atlist.append(oid)
                 if('//' in text):
                     break
@@ -290,35 +281,6 @@ class BlogParser:
             comment = soup.find_all('div',attrs={'class':'list_li S_line1 clearfix'})
             # get from each comment
             for item in comment:
-                '''
-                if(item.find('a',attrs = {'extra-data':'type=atname'})):
-                    user = item.find('div', attrs ={'class':'WB_text'})
-                    user_res = user.find('a',attrs={'target':'_blank'})
-                    user_at = user.find('a',attrs={'extra-data':'type=atname'})
-                    username = user_at['usercard'][5:]
-
-                    user0 = user_res['usercard'][3:]
-                    user_url = user_at['href']
-                    btag = 'weibo.com/n/'
-                    etag = '?from=feed&loc=at'
-                    bpos = user_url.find(btag)+len(btag)
-                    epos = user_url.find(etag)
-                    username = user_url[bpos:epos]
-                    url = 'http://weibo.com/aj/v6/user/newcard?ajwvr=6&name='+username+'&type=1'
-                    userpage = self.downloader.download(url)
-                    btag = 'uid="'
-                    etag = '"'
-                    bpos = userpage.find(btag)+len(btag)
-                    epos = userpage[bpos:].find(etag)+bpos
-                    user1 = userpage[bpos:epos]
-                    users = [user0,user1]
-                else:
-                    user = item.find('div', attrs ={'class':'WB_text'})
-                    user = user.find('a',attrs={'target':'_blank'})
-                    username = user.contents[0]
-                    user0 = user['usercard'][3:]
-                    users = [user0]
-                '''
                 user = item.find('div', attrs ={'class':'WB_text'})
                 user_con = user.contents
                 user_at = 0
@@ -344,9 +306,12 @@ class BlogParser:
                                     userpage = self.downloader.download(url)
                                     btag = 'uid="'
                                     etag = '"'
-                                    bpos = userpage.find(btag)+len(btag)
-                                    epos = userpage[bpos:].find(etag)+bpos
-                                    user_at = userpage[bpos:epos]
+                                    if(userpage.find(btag) != -1):
+                                        bpos = userpage.find(btag)+len(btag)
+                                        epos = userpage[bpos:].find(etag)+bpos
+                                        user_at = userpage[bpos:epos]
+                                    else:
+                                        user_at = '0'
                                     break
                         # modified because there might be some at in the comment that distort the information
                         # tested on Tangwei's weibo
@@ -354,13 +319,11 @@ class BlogParser:
                 if(user_at):
                     users = [user_res,user_at]
                 else:
-                    users = [user_res]
+                    users = [user_res,'0']
 
                 text = item.find('div',attrs = {'class':'WB_text'})
                 comment_cont = text.get_text().strip()
-                print "username_type", type(username)
                 com_pos = comment_cont.find(username)
-                print "username_len", len(username)
                 comment_cont = comment_cont[com_pos+len(username)+1:]
                 tag = '//'
                 pos = comment_cont.find(tag)
@@ -379,21 +342,10 @@ class BlogParser:
                 else:
                     comment_time = time.split()[0]
                     if(comment_time.find('月') != -1):
-                        '''
-                        print type(comment_time)
-                        print "comment_time",comment_time
-                        '''
                         mtag = '月'
                         dtag = '日'
                         pos1 = comment_time.find(mtag)
                         pos2 = comment_time.find(dtag)
-                        '''
-                        month = comment_time[:pos1]
-                        day = comment_time[pos1+len(mtag):pos2]
-                        print pos1
-                        print pos2
-                        print len(mtag)
-                        '''
                         month = comment_time[:pos1]
                         day = comment_time[pos1+1:pos2]
                         str_time = '2015-'+month+'-'+day
@@ -428,28 +380,6 @@ class BlogParser:
                 repost_list.append(repost_user)
         return repost_list
         # only contain the users' ID number, the text together was omitted
-
-    '''
-    def output(self, blogmsg):
-        print 'iu  is :' + blogmsg['iu']
-        print 'un  is :' + blogmsg['un']
-        print 'mid is :' + blogmsg['mid']
-        print 'mc  is :' + blogmsg['mc']
-        print 'nc  is :' + blogmsg['nc']
-        print 'run is :' + blogmsg['run']
-        print 'rmc is :' + blogmsg['rmc']
-        print 'pu  is :' + blogmsg['pu']
-        print 'rrc is :' + blogmsg['rrc']
-        print 'rcc is :' + blogmsg['rcc']
-        print 'rpt is :' + blogmsg['rpt']
-        print 'rpage is :' + blogmsg['rpage'] ;
-        print 'rc  is :' + blogmsg['rc']
-        print 'cc  is :' + blogmsg['cc']
-        print 'page is :' + blogmsg['page'] ;
-        print 'pt  is :' + blogmsg['pt']
-        print 'srn is :' + blogmsg['srn'] ;
-        print '======================================'
-    '''
 
 
 if __name__ == '__main__':
