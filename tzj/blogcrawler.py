@@ -125,7 +125,7 @@ class BlogCrawler(object):
         total_pagenum = msgcount / per_pagenum
         if msgcount % per_pagenum:
             total_pagenum += 1
-        print "total_page: ",total_pagenum
+        print "blog_page #: ",total_pagenum
         return total_pagenum
 
     def _parse_msgcount(self, content):
@@ -233,7 +233,7 @@ class BlogCrawler(object):
             sub_blogs = self.parser.parse(content)
             blogs.extend(sub_blogs)
         if not self._continue(blogs):
-            print "not continue"
+            #print "not continue"
             return blogs
         # 下载第二页
         self.http_params['count'] = '15'

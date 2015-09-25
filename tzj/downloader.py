@@ -38,13 +38,21 @@ class Downloader(object):
             url += encode_params
         print "url:"
         print url
-       # try:
-        req = urllib2.Request(url, headers=self.headers) 
-        result = self.opener.open(req)
-        text = result.read()
-        #except:
-         #   print "Download Error Occured! "
-          #  return None
+        fails = 0
+        while (True):
+            try:
+                if(fails>3):
+                    print "Downloading html error occured."
+                    break
+                req = urllib2.Request(url, headers=self.headers) 
+                result = self.opener.open(req,timeout = 10)
+                text = result.read()
+            except:
+                fails = fails+1
+            else:
+                break
+             #   print "Download Error Occured! "
+              #  return None
         result = gzip.GzipFile(fileobj = cStringIO.StringIO(text)).read()
         content = result.decode(self.charset, 'ignore')
         content = eval("u'''" + content + "'''").encode(self.charset)

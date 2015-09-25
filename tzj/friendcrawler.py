@@ -58,7 +58,7 @@ class FriendCrawler(object):
             url = 'http://weibo.com/'+str(uid)+'/myfans?cfs=600&relate=fans&t=1&f=1&type=&Pl_Official_RelationFans__103_page='+str(page)
         else:
             url = 'http://weibo.com/p/100505'+str(uid)+'/follow?relate=fans&page='+str(page)
-        print "url: ",url
+        #print "url: ",url
         return url
     # get the friends url, could only get 10 pages now
     
@@ -82,7 +82,7 @@ class FriendCrawler(object):
             return None
         '''
         pageNum = min(10,int((self.friendNum-1)/15)+1)
-        print "Friends No:",self.friendNum
+        print "Friends #:",self.friendNum
         # should be careful here
         # 10 is the maximun number of pages we could get
         for i in range(1,pageNum+1):
@@ -105,7 +105,7 @@ class FriendCrawler(object):
         content = content[epos:bpos]
         content = self._process_html(content)
         if(len(content) == 0):
-            print "Content matching failed."
+            print "Friends matching failed."
             return None
         soup = BeautifulSoup(content)
         return self.parser.parse(soup,self.origin)

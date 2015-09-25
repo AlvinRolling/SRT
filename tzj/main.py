@@ -4,10 +4,10 @@ import downloader
 from account import Account
 import datetimelib
 import filelib
-
+import time
 import blogparser
 import commonblogparser
-
+import os
 import blogcrawler
 from friendcrawler import FriendCrawler
 from blogcrawler import BlogCrawler
@@ -16,18 +16,29 @@ import config
 
 from writefile import WriteFile
 
+t1 = time.time()
 test = Account()
 while(True):
     if(test.login()):
         break
 
-to_be_searched = [1995234631]   # my uid
+#to_be_searched = [1995234631]  
+#to_be_searched = [5102872939]
+to_be_searched = [3872968091]
 searched = []
 blogcrawler = BlogCrawler()
 writefile = WriteFile()
 
-sumcount = 0;
+sumcount = 0
+
 while(len(to_be_searched) > 0):
+    t2 = time.time()
+    delta_t = t2-t1
+    if(delta_t>3600):
+        # refresh the cookie every hour
+        while(True):
+            if(test.login()):
+                break
     sumcount = sumcount+1
     if(sumcount > 3000): # input the number of users we need 
         break
@@ -37,8 +48,11 @@ while(len(to_be_searched) > 0):
     else:
         origin = 0  
     #try:
+    if( not os.path.exists(str(uid))):
+        os.mkdir(str(uid))
     blog = blogcrawler.scratch(str(uid))    # get users blogs 
     writefile.write_blog(uid,blog)          # write them in the file    
+    print "Blogs of "+str(uid)+" were recorded."
     friendcrawler = FriendCrawler(uid,origin)   # get users friends
     friends = friendcrawler.scratch()
     writefile.write_fans(uid,friends)     # write friends info
@@ -48,64 +62,61 @@ while(len(to_be_searched) > 0):
     writefile.write_follows(uid,follow)
     print "Follows of "+str(uid)+" were recorded."
     
-    #try:
-    #fopen_id = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_fans_id.txt","r") 
-    fopen_id = open(str(uid)+"_fans_id.txt","r")       
+    try:
+        fopen_id = open(str(uid)+"/"+str(uid)+"_fans_id.txt","r")       
     # read friends from the file saved above
-    
-    while True:    
-        new_friend = fopen_id.readline()
-        if(new_friend):       
-            new_friend = new_friend.split()
-            new_friend = new_friend[0]
-            if(new_friend in searched):
-                continue
-            else:
-                if(new_friend not in to_be_searched):
-                    to_be_searched.append(new_friend)
-        else:
-            break
-    fopen_id.close()
 
-    #fopen_id = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_follows_id.txt","r")
-    fopen_id = open(str(uid)+"_follows_id.txt","r")        
-    # read friends from the file saved above
-    
-    while True:    
-        new_friend = fopen_id.readline()
-        if(new_friend):
-            new_friend = new_friend.split()
-            new_friend = new_friend[0]
-            if(new_friend in searched):
-                continue
+        while True:    
+            new_friend = fopen_id.readline()
+            if(new_friend):       
+                new_friend = new_friend.split()
+                new_friend = new_friend[0]
+                if(new_friend in searched):
+                    continue
+                else:
+                    if(new_friend not in to_be_searched):
+                        to_be_searched.append(new_friend)
             else:
-                if(new_friend not in to_be_searched):
-                    to_be_searched.append(new_friend)
-        else:
-            break
-    fopen_id.close()
-#except:
-    #print "Open File Error! "
-    searched.append(uid)
-    #f = open("C:/Users/hp1/Desktop/weibo_crawler/searched.txt","a+")
-    f = open("searched.txt","a+")
-    f.write(str(uid))
-    f.write('\n')
-    f.close()
-    
-    #f = open("C:/Users/hp1/Desktop/weibo_crawler/to_be_searched.txt","w")
-    f = open("to_be_searched","w")
-    for item in to_be_searched:
-        f.write(str(item))
+                break
+        fopen_id.close()
+
+        #fopen_id = open("C:/Users/hp1/Desktop/weibo_crawler/"+str(uid)+"_follows_id.txt","r")
+        fopen_id = open(str(uid)+"/"+str(uid)+"_follows_id.txt","r")        
+        # read friends from the file saved above
+        
+        while True:    
+            new_friend = fopen_id.readline()
+            if(new_friend):
+                new_friend = new_friend.split()
+                new_friend = new_friend[0]
+                if(new_friend in searched):
+                    continue
+                else:
+                    if(new_friend not in to_be_searched):
+                        to_be_searched.append(new_friend)
+            else:
+                break
+        fopen_id.close()
+    #except:
+        #print "Open File Error! "
+        searched.append(uid)
+        #f = open("C:/Users/hp1/Desktop/weibo_crawler/searched.txt","a+")
+        f = open("searched.txt","a+")
+        f.write(str(uid))
         f.write('\n')
-    f.close()
-#except:
-'''
-    f = open("C:/Users/hp1/Desktop/weibo_crawler/wrong.txt","a+")
+        f.close()
+        
+        #f = open("C:/Users/hp1/Desktop/weibo_crawler/to_be_searched.txt","w")
+        f = open("to_be_searched.txt","w")
+        for item in to_be_searched:
+            f.write(str(item))
+            f.write('\n')
+        f.close()
+except:
+    f = open("wrong.txt","a+")
     f.write(str(uid))
     f.write('\n')
     f.close()
-'''
         
 
 

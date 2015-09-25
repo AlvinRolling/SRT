@@ -104,7 +104,7 @@ class Account():
         urll = s[bpos:epos]
         login = self.getData(urll)
         if(login.find('retcode=0')):
-            print "successful"
+            print "---------login successful---------"
             #cj.save("C:/Users/hp1/Desktop/weibo_crawler/cookie.txt",ignore_discard=True, ignore_expires=True)
             cj.save("cookie.txt",ignore_discard=True, ignore_expires=True)
             return True

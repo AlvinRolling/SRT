@@ -23,7 +23,7 @@ class FollowCrawler(object):
             self.parser = FollowParser1()
             self.per = 20
         self.friendNum = self._parse_friendnum(uid,origin)
-        print "FollowNum: ",self.friendNum
+        #print "Follow #: ",self.friendNum
         
         # origin==1, means it's the user itself, the html is a little different 
         
@@ -84,7 +84,7 @@ class FollowCrawler(object):
             return None
         '''
         pageNum = min(10,int((self.friendNum-1)/self.per)+1)
-        print "Follows No:",self.friendNum
+        print "Follows #:",self.friendNum
         # should be careful here
         # 10 is the maximun number of pages we could get
         for i in range(1,pageNum+1):
@@ -117,7 +117,7 @@ class FollowCrawler(object):
         content = content[bpos:epos]
         content = self._process_html(content)
         if(len(content) == 0):
-            print "Content matching failed."
+            print "Follows matching failed."
             return None
         soup = BeautifulSoup(content)
         return self.parser.parse(soup,self.origin)

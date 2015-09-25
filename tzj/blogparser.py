@@ -34,7 +34,7 @@ class BlogParser:
         'rc': '0',  #消息的转发次数
         'cc': '0',  #消息的评论次数
         'lc': '0',  #消息的赞次数，14/9/2015
-        'lp': '0',  #消息的赞的人，15/9/2015
+        'lp': [],  #消息的赞的人，15/9/2015
         'comment': [],  #消息的评论，包括评论人，被评论人和评论内容
         'repost': [],   #消息的转发的人
         'srn': '',  #消息来源
@@ -72,7 +72,7 @@ class BlogParser:
         'rc': '0',  #消息的转发次数
         'cc': '0',  #消息的评论次数
         'lc': '0',  #消息的赞次数，14/9/2015
-        'lp': '0',  #消息的赞的人，15/9/2015
+        'lp': [],  #消息的赞的人，15/9/2015
         'comment': [],  #消息的评论，包括评论人，被评论人和评论内容
         'repost': [],   #消息的转发的人
         'srn': '',  #消息来源
@@ -159,18 +159,24 @@ class BlogParser:
         commentcount = '0'
         likecount = '0'
         statstr = str(statsoup)
-        bpos = statstr.find('转发')
+        bpos = statstr.rfind('转发')
         if bpos != -1:
             epos = statstr.find('<', bpos)
             forwardcount = statstr[bpos + 6:epos]
             forwardcount = forwardcount.strip()
             if(len(forwardcount)==0):
                 forwardcount = '0'
-        bpos = statstr.find('评论')
+        bpos = statstr.rfind('评论')
         if bpos != -1:
             epos = statstr.find('<', bpos)
             commentcount = statstr[bpos + 6:epos]
             commentcount = commentcount.strip()
+            try:
+                if(len(commentcount) != 0):
+                    temp = int(commentcount)
+            except:
+                import pdb
+                pdb.set_trace()
             if(len(commentcount)==0):
                 commentcount = '0'
         like_part = statsoup.find('span',attrs = {'node-type':'like_status'})
