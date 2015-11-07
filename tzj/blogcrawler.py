@@ -49,7 +49,7 @@ class BlogCrawler(object):
         self.uid = ''
 
     # =========  完成解析用户微博数据前的准备工作  ========#
-    def _init_(self, url):
+    def _init_(self, uid, url):
         """
         解析用户微博数据前的准备工作,包括:
         1. 获取当前用户的page_id
@@ -67,11 +67,13 @@ class BlogCrawler(object):
         if not self.exist(content):
             raise UserNotFoundError(url)
         # 获取用户ID
+        '''
         btag = "$CONFIG['oid']='"
         etag = "';"
         bpos = content.find(btag) + len(btag)
         epos = content.find(etag, bpos)
         uid = content[bpos:epos]
+        '''
         self.uid = uid
         # 获取 page_id
         self.page_id = self._parse_pageid(content)
@@ -181,7 +183,7 @@ class BlogCrawler(object):
         uid: 待抓取微博数据的用户ID
         start_pageindex: 从第几页开始抓取用户的微博数据
         """
-        self._init_(self.get_url(uid))
+        self._init_(uid, self.get_url(uid))
         '''
         if os.path.isfile(self.get_filepath(uid)):  # 用户微博已下载
             print self.uid, u'用户的微博已下载！'

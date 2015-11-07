@@ -16,30 +16,56 @@ import config
 
 from writefile import WriteFile
 
+def read_users(filename):
+    #filename = "to_be_searched.txt"
+    f = open(filename,"r")
+    
+    user_list = []
+    while True:
+        line = f.readline()
+        if line:
+            user_list.append(line.strip())
+        else:
+            break
+    return user_list
+
+
 t1 = time.time()
 test = Account()
 while(True):
     if(test.login()):
         break
-
+init_time = time.time()
 #to_be_searched = [1995234631]  
 #to_be_searched = [5102872939]
-to_be_searched = [3872968091]
+to_be_searched = read_users("to_be_searched.txt")
+searched = read_users("searched.txt")
+#to_be_searched = [3737537255]
 searched = []
 blogcrawler = BlogCrawler()
 writefile = WriteFile()
 
-sumcount = 0
+f = open("count.txt","r")
+line = f.readline()
+line = line.strip()
+sumcount = int(line)
 
 while(len(to_be_searched) > 0):
     t2 = time.time()
+    all_time = t2-init_time
+    if(all_time>(3600*3)):
+        break
     delta_t = t2-t1
+    print "user_time: ",delta_t
+    print "all_time: ", all_time
     if(delta_t>3600):
         # refresh the cookie every hour
+        t1 = time.time()
         while(True):
             if(test.login()):
                 break
     sumcount = sumcount+1
+    print "User Count: ",sumcount
     if(sumcount > 3000): # input the number of users we need 
         break
     uid = to_be_searched.pop(0)
@@ -50,19 +76,18 @@ while(len(to_be_searched) > 0):
     #try:
     if( not os.path.exists(str(uid))):
         os.mkdir(str(uid))
-    blog = blogcrawler.scratch(str(uid))    # get users blogs 
-    writefile.write_blog(uid,blog)          # write them in the file    
-    print "Blogs of "+str(uid)+" were recorded."
-    friendcrawler = FriendCrawler(uid,origin)   # get users friends
-    friends = friendcrawler.scratch()
-    writefile.write_fans(uid,friends)     # write friends info
-    print "Fans of "+str(uid)+" were recorded."
-    followcrawler = FollowCrawler(uid,origin)
-    follow = followcrawler.scratch()
-    writefile.write_follows(uid,follow)
-    print "Follows of "+str(uid)+" were recorded."
-    
     try:
+        blog = blogcrawler.scratch(str(uid))    # get users blogs 
+        writefile.write_blog(uid,blog)          # write them in the file    
+        print "Blogs of "+str(uid)+" were recorded."
+        friendcrawler = FriendCrawler(uid,origin)   # get users friends
+        friends = friendcrawler.scratch()
+        writefile.write_fans(uid,friends)     # write friends info
+        print "Fans of "+str(uid)+" were recorded."
+        followcrawler = FollowCrawler(uid,origin)
+        follow = followcrawler.scratch()
+        writefile.write_follows(uid,follow)
+        print "Follows of "+str(uid)+" were recorded."
         fopen_id = open(str(uid)+"/"+str(uid)+"_fans_id.txt","r")       
     # read friends from the file saved above
 
@@ -112,11 +137,15 @@ while(len(to_be_searched) > 0):
             f.write(str(item))
             f.write('\n')
         f.close()
-except:
-    f = open("wrong.txt","a+")
-    f.write(str(uid))
-    f.write('\n')
-    f.close()
+
+        f = open("count.txt","w")
+        f.write(str(sumcount))
+        f.close()
+    except:
+        f = open("wrong.txt","a+")
+        f.write(str(uid))
+        f.write('\n')
+        f.close()
         
 
 

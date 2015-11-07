@@ -46,7 +46,7 @@ class Account():
         self.header = {'User-Agent':'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '\
         'Chrome/43.0.2357.134 Safari/537.36'}
         #self.header = {'User-Agent' : 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)'}
-        self.name = '595463155@qq.com'
+        self.name = 'tang-zj13@mails.tsinghua.edu.cn'
         self.pwd = '5shiTOP08'
 
     def getData(self,url):
@@ -70,45 +70,48 @@ class Account():
             print 'Error,url:'+url
             
     def login(self):
-        print "----------logining---------"
-        prelogin_url = 'http://login.sina.com.cn/sso/prelogin.php?entry=weibo&callback=sinaSSOController.preloginCallBack&su=%s&rsakt=mod&checkpin=1&client=ssologin.js(v1.4.18)&_=1400822309846' % self.name
-        prelogin = self.getData(prelogin_url)
-        servertime = re.findall('"servertime":(.+?),',prelogin)[0]
-        pubkey = re.findall('"pubkey":"(.+?)",',prelogin)[0]
-        rsakv = re.findall('"rsakv":"(.+?)",',prelogin)[0]
-        nonce = re.findall('"nonce":"(.+?)",',prelogin)[0]
-        
-        su = base64.b64encode(urllib.quote(self.name))
-        rsaPublickey = int(pubkey,16)
-        key = rsa.PublicKey(rsaPublickey, 65537)
-        message = str(servertime) +'\t'+ str(nonce) +'\n'+ str(self.pwd)
-        sp = binascii.b2a_hex(rsa.encrypt(message,key))
-        # encode the nickname and password
-        
-        self.loginpostdata['su'] = su
-        self.loginpostdata['servertime'] = servertime
-        self.loginpostdata['sp'] = sp
-        self.loginpostdata['nonce'] = nonce
-        self.loginpostdata['rsakv'] = rsakv
-        
-        s = self.postData('http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.18)',self.loginpostdata,self.header)
-        btag = 'location.replace("'
-        etag = '");'
-        bpos = s.find(btag)
-        if bpos != -1:
-            bpos += len(btag)
-            epos = s.find(etag, bpos)
-        else:
-            bpos = s.find(btag.replace('"', "'")) + len(btag)
-            epos = s.find(etag.replace('"', "'"), bpos)
-        urll = s[bpos:epos]
-        login = self.getData(urll)
-        if(login.find('retcode=0')):
-            print "---------login successful---------"
-            #cj.save("C:/Users/hp1/Desktop/weibo_crawler/cookie.txt",ignore_discard=True, ignore_expires=True)
-            cj.save("cookie.txt",ignore_discard=True, ignore_expires=True)
-            return True
-        else:
+        try:
+            print "----------logining---------"
+            prelogin_url = 'http://login.sina.com.cn/sso/prelogin.php?entry=weibo&callback=sinaSSOController.preloginCallBack&su=%s&rsakt=mod&checkpin=1&client=ssologin.js(v1.4.18)&_=1400822309846' % self.name
+            prelogin = self.getData(prelogin_url)
+            servertime = re.findall('"servertime":(.+?),',prelogin)[0]
+            pubkey = re.findall('"pubkey":"(.+?)",',prelogin)[0]
+            rsakv = re.findall('"rsakv":"(.+?)",',prelogin)[0]
+            nonce = re.findall('"nonce":"(.+?)",',prelogin)[0]
+            
+            su = base64.b64encode(urllib.quote(self.name))
+            rsaPublickey = int(pubkey,16)
+            key = rsa.PublicKey(rsaPublickey, 65537)
+            message = str(servertime) +'\t'+ str(nonce) +'\n'+ str(self.pwd)
+            sp = binascii.b2a_hex(rsa.encrypt(message,key))
+            # encode the nickname and password
+            
+            self.loginpostdata['su'] = su
+            self.loginpostdata['servertime'] = servertime
+            self.loginpostdata['sp'] = sp
+            self.loginpostdata['nonce'] = nonce
+            self.loginpostdata['rsakv'] = rsakv
+            
+            s = self.postData('http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.18)',self.loginpostdata,self.header)
+            btag = 'location.replace("'
+            etag = '");'
+            bpos = s.find(btag)
+            if bpos != -1:
+                bpos += len(btag)
+                epos = s.find(etag, bpos)
+            else:
+                bpos = s.find(btag.replace('"', "'")) + len(btag)
+                epos = s.find(etag.replace('"', "'"), bpos)
+            urll = s[bpos:epos]
+            login = self.getData(urll)
+            if(login.find('retcode=0')):
+                print "---------login successful---------"
+                #cj.save("C:/Users/hp1/Desktop/weibo_crawler/cookie.txt",ignore_discard=True, ignore_expires=True)
+                cj.save("cookie.txt",ignore_discard=True, ignore_expires=True)
+                return True
+            else:
+                return False
+        except:
             return False
 
 
