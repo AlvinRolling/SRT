@@ -41,6 +41,7 @@ class BlogParser:
         'page': '',  #消息的微博页面
         'pt': '',  #消息的发布时间
         'feedpin': 0  #是否置顶
+        'location':''
         }
         pass
 
@@ -79,6 +80,7 @@ class BlogParser:
         'page': '',  #消息的微博页面
         'pt': '',  #消息的发布时间
         'feedpin': 0  #是否置顶
+        'location':''
         }
 
     def parse(self, html):
@@ -387,6 +389,10 @@ class BlogParser:
         return repost_list
         # only contain the users' ID number, the text together was omitted
 
+    def _parse_location(self,soup):
+        loc = soup.find('a',attrs = {'class':'W_btn_b btn_22px W_btn_cardlink'})
+        location = loc['title']
+        return location
 
 if __name__ == '__main__':
     import sys, os

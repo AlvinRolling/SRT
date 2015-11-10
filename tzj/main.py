@@ -29,11 +29,22 @@ def read_users(filename):
             break
     return user_list
 
+f = open("account.txt","r")
+account_list = []
+while(True):
+    line = f.readline()
+    if(line):
+        temp = line.split()
+        account_list.append(temp)
+    else:
+        break
+f.close()
+user_rank = 0
 
 t1 = time.time()
 test = Account()
 while(True):
-    if(test.login()):
+    if(test.login(account_list[0][0],account_list[0][1])):
         break
 init_time = time.time()
 #to_be_searched = [1995234631]  
@@ -53,16 +64,17 @@ sumcount = int(line)
 while(len(to_be_searched) > 0):
     t2 = time.time()
     all_time = t2-init_time
-    if(all_time>(3600*3)):
-        break
+    # if(all_time>(3600*3)):
+    #     break
     delta_t = t2-t1
     print "user_time: ",delta_t
     print "all_time: ", all_time
-    if(delta_t>3600):
+    if(delta_t> 300):
         # refresh the cookie every hour
         t1 = time.time()
+        user_rank = (user_rank+1)%4
         while(True):
-            if(test.login()):
+            if(test.login(account_list[user_rank][0],account_list[user_rank][1])):
                 break
     sumcount = sumcount+1
     print "User Count: ",sumcount
@@ -78,6 +90,9 @@ while(len(to_be_searched) > 0):
         os.mkdir(str(uid))
     try:
         blog = blogcrawler.scratch(str(uid))    # get users blogs 
+        if(len(blog)>2000):
+            continue
+        # modified on 9/11
         writefile.write_blog(uid,blog)          # write them in the file    
         print "Blogs of "+str(uid)+" were recorded."
         friendcrawler = FriendCrawler(uid,origin)   # get users friends

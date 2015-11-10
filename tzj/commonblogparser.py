@@ -15,7 +15,7 @@ class CommonBlogParser(BlogParser):
         self.blog['mc'] = self._get_text(msgsoup)
         # rrc,rcc,rc,cc
         self.blog['nc'] = self._parse_at_people(blogsoup)
-        
+        self.blog['location'] self._parse_location(msgsoup)
         statsouplist = blogsoup.find_all('div', class_='WB_handle')
         if len(statsouplist) == 2:
             self.blog['rc'], self.blog['cc'], self.blog['lc'] = self._parse_statistics(statsouplist[1])
@@ -41,6 +41,7 @@ class CommonBlogParser(BlogParser):
             self.blog['page'], self.blog['pt'], self.blog['srn'] = self._parse_blog_from(fromsouplist[1])
         elif len(fromsouplist) == 1:
             self.blog['page'], self.blog['pt'], self.blog['srn'] = self._parse_blog_from(fromsouplist[0])
+
         
         self.blog['lp'] = self._parse_like()
         self.blog['comment'] = self._parse_comment()

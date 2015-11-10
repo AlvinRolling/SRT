@@ -11,7 +11,8 @@ class WriteFile(object):
             if(len(result[i]) > 0):
                 m = len(result[i])
                 for j in range(0,m):
-                    if(int(result[i][j]['follow'])>1000 or int(result[i][j]['fans'])>1000):
+                    #if(int(result[i][j]['follow'])>1000 or int(result[i][j]['fans'])>1000):
+                    if(int(result[i][j]['follow'])>500 or int(result[i][j]['fans'])>500)
                         print "Omit user: ",int(result[i][j]['id'])
                         #print "follow: ",int(result[i][j]['follow'])
                         #print "fans: ",int(result[i][j]['fans'])
@@ -88,7 +89,7 @@ class WriteFile(object):
             if(len(result[i]) > 0):
                 m = len(result[i])
                 for j in range(0,m):
-                    if(int(result[i][j]['follow'])>1000 or int(result[i][j]['fans'])>1000):
+                    if(int(result[i][j]['follow'])>500 or int(result[i][j]['fans'])>500):
                         print "Omit user: ",int(result[i][j]['id'])
                         #print "follow: ",int(result[i][j]['follow'])
                         #print "fans: ",int(result[i][j]['fans'])

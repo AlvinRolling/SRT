@@ -211,6 +211,9 @@ class BlogCrawler(object):
         blogs = []
         for pageindex in range(start_pageindex, end_pageindex + direction, direction):
             temp_blogs = self._parse_blogs(pageindex)
+            if(pageindex>10):
+                break
+            # limit the number of blog pages, modified on 9/11
             print uid + ':获取第' + str(pageindex) + '页微博成功.'
             blogs.extend(temp_blogs)
             time.sleep(1)
